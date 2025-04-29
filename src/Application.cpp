@@ -8,7 +8,8 @@ void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) 
     Color color = colorSelector->getColor();
 
     if (tool == PENCIL) {
-        canvas->addPoint(mx, my, color.getR(), color.getG(), color.getB(), 7);
+       canvas->startScribble(color.getR(), color.getG(), color.getB(), 7);
+        canvas->addPointToScribble(mx, my); // Add the initial point
         canvas->redraw();
     }
     else if (tool == ERASER) {
@@ -38,7 +39,7 @@ void Application::onCanvasDrag(bobcat::Widget* sender, float mx, float my) {
     Color color = colorSelector->getColor();
 
     if (tool == PENCIL) {
-        canvas->addPoint(mx, my, color.getR(), color.getG(), color.getB(), 7);
+             canvas->addPointToScribble(mx, my);
         canvas->redraw();
     }
     else if (tool == ERASER) {
