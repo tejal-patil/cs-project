@@ -1,8 +1,21 @@
+
 #include "Canvas.h"
 #include <GL/freeglut.h>
 
 Canvas::Canvas(int x, int y, int w, int h) : Canvas_(x, y, w, h) {
     // 
+}
+
+void Canvas::startScribble(float r, float g, float b, int size) {
+    // Create a new scribble and add it to the container
+    Scribble* scribble = new Scribble(r, g, b, size);
+    scribbles.push_back(scribble);
+}
+
+void Canvas::addPointToScribble(float x, float y) {
+    if (!scribbles.empty()) {
+        scribbles.back()->addPoint(x, y);
+    }
 }
 
 void Canvas::addPoint(float x, float y, float r, float g, float b, int size) {
@@ -31,10 +44,16 @@ void Canvas::addPolygon(float x, float y, int sides, float length, float r, floa
 }
 
 void Canvas::undo() {
+     if (!scribbles.empty()) {
+        // Delete the last scribble and remove it from the container
+        delete scribbles.back();
+        scribbles.pop_back();
+    }
+    
     if (shapes.empty()) {
         return; // No shapes to undo
     }
-
+    
     // Get the last shape type and remove it from the shapes vector
     TOOL lastShape = shapes.back();
     shapes.pop_back();
@@ -44,6 +63,8 @@ void Canvas::undo() {
         delete points.back();
         points.pop_back();
     }
+    
+    
     else if (lastShape == CIRCLE && !circles.empty()) {
         delete circles.back();
         circles.pop_back();
@@ -60,9 +81,16 @@ void Canvas::undo() {
         delete polygons.back();
         polygons.pop_back();
     }
+
 }
 
 void Canvas::clear() {
+     
+    for (Scribble* scribble : scribbles) {
+        delete scribble;
+    }
+    scribbles.clear();
+
     for (unsigned int i = 0 ; i < points.size(); i++) {
         delete points[i];
     }
@@ -92,6 +120,9 @@ void Canvas::clear() {
 }
 
 void Canvas::render() {
+    for (Scribble* scribble : scribbles) {
+        scribble->draw();
+    }
     for (unsigned int i = 0 ; i < points.size(); i++) {
         points[i]->draw();
     }
@@ -110,5 +141,38 @@ void Canvas::render() {
 
     for (unsigned int i = 0 ; i < polygons.size(); i++) {
         polygons[i]->draw();
+    }
+}
+void Canvas::eraseAt(float x, float y, float eraserSize) {
+    // Check scribbles
+    for (auto it = scribbles.begin(); it != scribbles.end(); ++it) {
+        Scribble* scribble = *it;
+
+        for (Point* point : scribble->getPoints()) {
+            float dx = point->getX() - x;
+            float dy = point->getY() - y;
+            float distance = sqrt(dx * dx + dy * dy);
+
+            if (distance <= eraserSize) {
+                delete scribble;
+                scribbles.erase(it);
+                return;
+            }
+        }
+    }
+
+    // Check circles
+    for (auto it = circles.begin(); it != circles.end(); ++it) {
+        Circle* circle = *it;
+
+        float dx = circle->getX() - x;
+        float dy = circle->getY() - y;
+        float distance = sqrt(dx * dx + dy * dy);
+
+        if (distance <= eraserSize + circle->getRadius()) {
+            delete circle;
+            circles.erase(it);
+            return;
+        }
     }
 }
