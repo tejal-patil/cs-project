@@ -13,6 +13,10 @@ class Triangle {
 public:
     Triangle();
     Triangle(float x, float y, float base, float height, float r, float g, float b);
+    float getX() const { return x; }
+    float getY() const { return y; }
+    float getBase() const { return base; }
+    float getHeight() const { return height; }
 
     void draw();
 
