@@ -13,6 +13,9 @@ class Toolbar : public bobcat::Group {
     bobcat::Image* polygonButton;
     bobcat::Image* clearButton;
     bobcat::Image* undoButton;
+    bobcat::Image* selectButton;
+
+    bool isCollapsed = false;
 
     TOOL tool;
     ACTION action;
@@ -25,6 +28,7 @@ public:
 
     TOOL getTool() const;
     ACTION getAction() const;
+    
 
     friend struct AppTest;
 };
