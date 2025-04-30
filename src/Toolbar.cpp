@@ -59,10 +59,33 @@ void Toolbar::onClick(bobcat::Widget* sender) {
     else if (sender == undoButton) {
         action = UNDO;
     }
+    else if (sender == selectButton) {
+    isCollapsed = !isCollapsed;
+
+    // Toggle visibility of the other tool buttons
+    pencilButton->visible();
+    eraserButton->visible();
+    circleButton->visible();
+    triangleButton->visible();
+    rectangleButton->visible();
+    polygonButton->visible();
+    clearButton->visible();
+    undoButton->visible();
+
+    // Optionally resize the toolbar (height-wise)
+    if (isCollapsed) {
+        this->resize(x(), y(), w(), 50);  // just show the select tool row
+    } else {
+        this->resize(x(), y(), w(), 500); // full height for all tools
+    }
+
+    tool = SELECT; // still activate the select tool
+}
 
     if (onChangeCb) {
         onChangeCb(this);
     }
+    
 
     visualizeSelectedTool();
     redraw();
@@ -85,6 +108,7 @@ Toolbar::Toolbar(int x, int y, int w, int h) : Group(x, y, w, h) {
     polygonButton = new Image(x, y + 250, 50, 50, "./assets/polygon.png");
     clearButton = new Image(x, y + 300, 50, 50, "./assets/clear.png");
     undoButton = new Image(x, y + 350, 50, 50, "./assets/undo.png");
+    selectButton = new Image(x, y + 400, 50, 50, "./assets/mouse.png");
 
     tool = PENCIL;
     action = NONE;
@@ -97,6 +121,7 @@ Toolbar::Toolbar(int x, int y, int w, int h) : Group(x, y, w, h) {
     polygonButton->box(FL_BORDER_BOX);
     clearButton->box(FL_BORDER_BOX);
     undoButton->box(FL_BORDER_BOX);
+    selectButton->box(FL_BORDER_BOX);
 
     visualizeSelectedTool();
 
@@ -108,4 +133,5 @@ Toolbar::Toolbar(int x, int y, int w, int h) : Group(x, y, w, h) {
     ON_CLICK(polygonButton, Toolbar::onClick);
     ON_CLICK(clearButton, Toolbar::onClick);
     ON_CLICK(undoButton, Toolbar::onClick);
-}
+    ON_CLICK(selectButton, Toolbar::onClick);
+};
