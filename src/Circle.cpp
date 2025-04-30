@@ -1,27 +1,32 @@
-#ifndef CIRCLE_H
-#define CIRCLE_H
+#include "Circle.h"
+#include <GL/freeglut.h>
+#include <cmath>
 
-class Circle {
-    float x;
-    float y;
-    float radius;
-    float r;
-    float g;
-    float b;
+Circle::Circle() {
+    x = 0.0;
+    y = 0.0;
+    radius = 0.1;
+    r = 0.0;
+    g = 0.0;
+    b = 0.0;
+}
 
-public:
-    Circle();
-    Circle(float x, float y, float radius, float r, float g, float b);
+Circle::Circle(float x, float y, float radius, float r, float g, float b) {
+    this->x = x;
+    this->y = y;
+    this->radius = radius;
+    this->r = r;
+    this->g = g;
+    this->b = b;
+}
 
-    void draw();
-
-    float getX() const { return x; } 
-
-    float getY() const { return y; }   
-       
-    float getRadius() const { return radius; }
-
-    friend struct AppTest;
-};
-
-#endif
+void Circle::draw() {
+    glColor3f(r, g, b);
+    
+    glBegin(GL_POLYGON);
+        float inc = 2 * M_PI / 60;
+        for (float theta = 0; theta <= 2 * M_PI; theta += inc) {
+            glVertex2f(x + radius * cos(theta), y + radius * sin(theta));
+        }
+    glEnd();
+}
