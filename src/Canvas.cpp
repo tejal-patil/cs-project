@@ -143,36 +143,81 @@ void Canvas::render() {
         polygons[i]->draw();
     }
 }
+
 void Canvas::eraseAt(float x, float y, float eraserSize) {
     // Check scribbles
     for (auto it = scribbles.begin(); it != scribbles.end(); ++it) {
         Scribble* scribble = *it;
 
+        // Check if any point in the scribble is within the eraser's area
         for (Point* point : scribble->getPoints()) {
             float dx = point->getX() - x;
             float dy = point->getY() - y;
             float distance = sqrt(dx * dx + dy * dy);
 
             if (distance <= eraserSize) {
+                // If overlap is detected, delete the whole scribble
                 delete scribble;
                 scribbles.erase(it);
-                return;
+                return; // Exit after deleting one scribble
             }
         }
     }
-
-    // Check circles
     for (auto it = circles.begin(); it != circles.end(); ++it) {
         Circle* circle = *it;
 
+        // Check if the eraser overlaps with the circle
         float dx = circle->getX() - x;
         float dy = circle->getY() - y;
         float distance = sqrt(dx * dx + dy * dy);
 
         if (distance <= eraserSize + circle->getRadius()) {
+            // Delete the entire circle
             delete circle;
             circles.erase(it);
+            return; // Exit after deleting one shape
+        }
+    }
+    for (auto it = rectangles.begin(); it != rectangles.end(); ++it) {
+        Rectangle* rect = *it;
+
+        float x0 = rect->getX();
+        float y0 = rect->getY();
+        float w = rect->getWidth();
+        float h = rect->getHeight();
+
+        if (x >= x0 && x <= x0 + w && y >= y0 && y <= y0 + h) {
+            delete rect;
+            rectangles.erase(it);
             return;
         }
     }
+    for (auto it = triangles.begin(); it != triangles.end(); ++it) {
+    Triangle* tri = *it;
+
+    float x0 = tri->getX();
+    float y0 = tri->getY();
+    float base = tri->getBase();
+    float height = tri->getHeight();
+
+    if (x >= x0 && x <= x0 + base && y >= y0 && y <= y0 + height) {
+        delete tri;
+        triangles.erase(it);
+        return;
+    }
+}  
+    for (auto it = polygons.begin(); it != polygons.end(); ++it) {
+        Polygon* poly = *it;
+
+        float dx = poly->getX() - x;
+        float dy = poly->getY() - y;
+        float distance = sqrt(dx * dx + dy * dy);
+
+        if (distance <= poly->getSideLength()) {  
+        delete poly;
+        polygons.erase(it);
+        return;
+    }
+}
+
 }
