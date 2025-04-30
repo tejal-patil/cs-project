@@ -9,11 +9,12 @@ void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) 
 
     if (tool == PENCIL) {
        canvas->startScribble(color.getR(), color.getG(), color.getB(), 7);
-        canvas->addPointToScribble(mx, my); // Add the initial point
-        canvas->redraw();
+       canvas->addPointToScribble(mx, my); // Add the initial point
+       canvas->redraw();
     }
     else if (tool == ERASER) {
-        canvas->addPoint(mx, my, 1.0, 1.0, 1.0, 14);
+        float eraserSize = 20.0f; // Example size for the eraser
+        canvas->eraseAt(mx, my, eraserSize);
         canvas->redraw();
     }
     else if (tool == CIRCLE) {
