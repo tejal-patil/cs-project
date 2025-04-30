@@ -1,5 +1,7 @@
+
 #ifndef CANVAS_H
 #define CANVAS_H
+#include "Scribble.h"
 
 #include <bobcat_ui/all.h>
 #include <vector>
@@ -37,6 +39,12 @@ public:
     void clear();
 
     void render();
+
+    void startScribble(float r, float g, float b, int size);
+
+    void addPointToScribble(float x, float y);
+    
+    void eraseAt(float x, float y, float eraserSize);
 
     friend struct AppTest;
 };
