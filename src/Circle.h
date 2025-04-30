@@ -15,6 +15,12 @@ public:
 
     void draw();
 
+    float getX() const { return x; } 
+
+    float getY() const { return y; }   
+       
+    float getRadius() const { return radius; }
+
     friend struct AppTest;
 };
 
