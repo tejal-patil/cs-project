@@ -8,13 +8,11 @@ void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) 
     Color color = colorSelector->getColor();
 
     if (tool == PENCIL) {
-       canvas->startScribble(color.getR(), color.getG(), color.getB(), 7);
-       canvas->addPointToScribble(mx, my); // Add the initial point
-       canvas->redraw();
+        canvas->addPoint(mx, my, color.getR(), color.getG(), color.getB(), 7);
+        canvas->redraw();
     }
     else if (tool == ERASER) {
-        float eraserSize = 20.0f; // Example size for the eraser
-        canvas->eraseAt(mx, my, eraserSize);
+        canvas->addPoint(mx, my, 1.0, 1.0, 1.0, 14);
         canvas->redraw();
     }
     else if (tool == CIRCLE) {
@@ -40,7 +38,7 @@ void Application::onCanvasDrag(bobcat::Widget* sender, float mx, float my) {
     Color color = colorSelector->getColor();
 
     if (tool == PENCIL) {
-             canvas->addPointToScribble(mx, my);
+        canvas->addPoint(mx, my, color.getR(), color.getG(), color.getB(), 7);
         canvas->redraw();
     }
     else if (tool == ERASER) {
@@ -66,7 +64,7 @@ Application::Application() {
     window = new Window(25, 75, 400, 400, "Paint Application Shapes");
 
     toolbar = new Toolbar(0, 0, 50, 400);
-    canvas = new Canvas(50, 0, 350, 350);
+    canvas = new Canvas(50, 0, 350, 300);
     colorSelector = new ColorSelector(50, 350, 350, 50);
 
     window->add(toolbar);
